@@ -64,8 +64,9 @@ namespace scripts.tools
             if (angleRotation > maxAngleRotation) angleRotation = maxAngleRotation;
             
             //Check for clockwise or counter-clockwise
-            Plane sidePlane = new Plane(movingPosition, centerPosition, PlayerInfo.instance.transform.position);
-            angleRotation = sidePlane.GetSide(movePosition) ? angleRotation : -angleRotation;
+            var PlayerPos = PlayerInfo.instance.transform.position;
+            Plane sidePlane = new Plane(movingPosition, centerPosition, PlayerPos);
+            angleRotation = sidePlane.GetSide(movePosition) == projectionPlane.GetSide(PlayerPos) ? angleRotation : -angleRotation;
             
             //Check for max rotation
             if (Mathf.Abs(_totalRotation + angleRotation) > rotationMax)
