@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +12,7 @@ public class FPSCounter : MonoBehaviour
         Unscaled
     }
 
-    public Text Text;
+    public TMP_Text Text;
     [Tooltip("Unscaled is more accurate, but jumpy, or if your game modifies Time.timeScale. Use Smooth for smoothDeltaTime.")]
     public DeltaTimeType DeltaType = DeltaTimeType.Smooth;
 

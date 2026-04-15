@@ -51,8 +51,6 @@ public class InteractController : MonoBehaviour
         {
             isInteracts = true;
             interactObject.position = hit.point;
-            Debug.Log(hit.transform.gameObject.layer);
-            Debug.Log("Hit!");
             interactableObject = hit.transform.GetComponentInParent<InteractableObject>();
             interactableObject.StartMovement(interactObject.position);
             

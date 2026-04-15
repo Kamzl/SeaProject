@@ -44,6 +44,7 @@ namespace scripts.tools
         public void StartMovement(Vector3 startPosition)
         {
             movingPoint.position = startPosition;
+            HudController.instance.PutDragOriginPoint(movingPoint);
         }
         
         public void MoveTo(Vector3 movePosition)

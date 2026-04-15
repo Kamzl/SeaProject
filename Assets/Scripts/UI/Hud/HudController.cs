@@ -9,10 +9,13 @@ public class HudController : MonoBehaviour
 
     [SerializeField] private Image crosshair;
     [SerializeField] private List<Color> crosshairColors;
+    
+    [SerializeField] private RectTransform dragOriginImage;
 
     private CrosshairStatus _crosshairStatus;
     private bool _isCrosshairOnInteractable;
     private bool _isInteractableDragged;
+    private Transform _dragOriginPoint;
 
     public enum CrosshairStatus
     {
@@ -25,6 +28,15 @@ public class HudController : MonoBehaviour
     {
         ChangeCrosshairStatus(CrosshairStatus.Default);
         instance = this;
+    }
+
+    private void Update()
+    {
+        if (_isInteractableDragged)
+        {
+            if (Camera.main != null)
+                dragOriginImage.position = Camera.main.WorldToScreenPoint(_dragOriginPoint.position);
+        }
     }
 
     public CrosshairStatus GetCrosshairStatus()
@@ -41,6 +53,10 @@ public class HudController : MonoBehaviour
     public void SetIsInteractableDragged(bool value)
     {
         _isInteractableDragged = value;
+        if (!_isInteractableDragged)
+        {
+            dragOriginImage.gameObject.SetActive(false);
+        }
         RecalculateCrosshair();
     }
 
@@ -64,5 +80,11 @@ public class HudController : MonoBehaviour
     {
         _crosshairStatus = status;
         crosshair.color = crosshairColors[(int)_crosshairStatus];
+    }
+
+    public void PutDragOriginPoint(Transform worldPoint)
+    {
+        _dragOriginPoint = worldPoint;
+        dragOriginImage.gameObject.SetActive(true);
     }
 }
