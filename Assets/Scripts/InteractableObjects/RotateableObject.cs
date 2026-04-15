@@ -8,38 +8,13 @@ namespace scripts.tools
     {
         [SerializeField] private Transform rotateTransform;
         [SerializeField] private Transform movingPoint;
-        [SerializeField] private RotationAxis rotationAxis;
+        [SerializeField] private Vector3 rotationVector;
         [SerializeField] private float rotationMagnitude;
         [SerializeField] private float rotationMax;
 
         private float _totalRotation;
         private float _lastRotation;
-
-        private Vector3 _rotationVector;
         
-
-        enum RotationAxis
-        {
-            X,
-            Y,
-            Z
-        }
-
-        private void OnEnable()
-        {
-            switch (rotationAxis)
-            {
-                case RotationAxis.X:
-                    _rotationVector = Vector3.right;
-                    break;
-                case RotationAxis.Y:
-                    _rotationVector = Vector3.up;
-                    break;
-                case RotationAxis.Z:
-                    _rotationVector = Vector3.forward;
-                    break;
-            }
-        }
 
         public void StartMovement(Vector3 startPosition)
         {
@@ -81,7 +56,7 @@ namespace scripts.tools
                 }
             }
             _totalRotation += angleRotation;
-            rotateTransform.Rotate(_rotationVector, angleRotation);
+            rotateTransform.Rotate(rotationVector, angleRotation);
             _lastRotation = angleRotation;
         }
     }
