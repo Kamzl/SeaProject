@@ -1,3 +1,4 @@
+using scripts.tools;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.LowLevelPhysics2D;
@@ -10,6 +11,7 @@ public class InteractController : MonoBehaviour
     [SerializeField] private InputActionAsset inputAsset;
 
     private bool isInteracts;
+    private InteractableObject interactableObject;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -17,6 +19,7 @@ public class InteractController : MonoBehaviour
         action.canceled += context =>
         {
             isInteracts = false;
+            HudController.instance.SetIsInteractableDragged(false);
         };
     }
 
@@ -29,9 +32,9 @@ public class InteractController : MonoBehaviour
             direction = camera.transform.forward
         };
         RaycastHit hit;
-        if (isInteracts && Physics.Raycast(ray, out hit, raycastDistance, LayerMask.GetMask("Interactable")))
+        if (isInteracts)
         {
-            Debug.DrawLine(ray.origin, hit.point);
+            interactableObject.MoveTo(interactObject.position);
         }
     }
 
@@ -43,18 +46,17 @@ public class InteractController : MonoBehaviour
             direction = camera.transform.forward
         };
         RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit, raycastDistance))
+        
+        if (Physics.Raycast(ray, out hit, raycastDistance, LayerMask.GetMask("Interactable")))
         {
             isInteracts = true;
             interactObject.position = hit.point;
             Debug.Log(hit.transform.gameObject.layer);
-        }
-        
-        if (Physics.Raycast(ray, out hit, raycastDistance, LayerMask.GetMask("Interactable")))
-        {
             Debug.Log("Hit!");
+            interactableObject = hit.transform.GetComponentInParent<InteractableObject>();
+            interactableObject.StartMovement(interactObject.position);
+            
+            HudController.instance.SetIsInteractableDragged(true);
         }
-        
     }
 }
