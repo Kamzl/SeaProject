@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae489bc0b5413bf4dad0f879ff90c99e, type: 3}
   m_Name: InteractableSettings
   m_EditorClassIdentifier: Assembly-CSharp::InteractableSettings
-  rotationThreshold: 0.0001
+  doorAutoCloseDistance: 5

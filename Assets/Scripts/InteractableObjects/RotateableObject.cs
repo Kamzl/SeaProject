@@ -11,7 +11,7 @@ namespace Scripts.Tools
         [SerializeField] private Transform rotateTransform;
         [SerializeField] private Transform movingPoint;
         [SerializeField] private Vector3 rotationVector;
-        [SerializeField] private float startingRotation;
+        [SerializeField, Range(0, 1)] private float startingRotation;
         [SerializeField] private float rotationMagnitude;
         [SerializeField] private float rotationMax;
 
@@ -85,16 +85,15 @@ namespace Scripts.Tools
         public void ResetRotation(float duration)
         {
             isInteractable = false;
-            float animationProgress = 0;
-            Quaternion startRotation = transform.localRotation;
-            DOTween.To(() => animationProgress, x =>
+            float startingTotalRotation = startingRotation * (rotationMax * 2) - rotationMax;
+            DOTween.To(() => _totalRotation, x =>
             {
-                transform.localRotation =
-                    Quaternion.Lerp(startRotation, _startingRotation, x);
-            }, 1, duration).OnComplete(() =>
+                float angleRotation = _totalRotation - x;
+                rotateTransform.Rotate(rotationVector, angleRotation);
+                _totalRotation = x;
+            }, startingTotalRotation, duration).OnComplete(() =>
             {
                 isInteractable = true;
-                _totalRotation = startingRotation * (rotationMax * 2) - rotationMax;
             });
         }
     }

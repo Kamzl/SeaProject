@@ -4,6 +4,7 @@ using R3;
 using Scripts.Tools;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Zenject;
 
 namespace Objects.Doors
 {
@@ -13,10 +14,12 @@ namespace Objects.Doors
         [SerializeField] private Vector3 rotationEndValue;
         [SerializeField] private AnimationCurve rotationCurve;
         [SerializeField] private float animationDuration;
-        [SerializeField] private float doorAutoCloseDistance;
 
         private Quaternion _rotationStartValue;
         private Status _status;
+
+        [Inject] private InteractableService _interactableService;
+        private float _doorAutoCloseDistance;
 
         enum Status
         {
@@ -32,11 +35,12 @@ namespace Objects.Doors
             handle.OnRotate.Subscribe(CheckDoor);
             _rotationStartValue = transform.localRotation;
             _status = Status.Closed;
+            _doorAutoCloseDistance = _interactableService.InteractableSettings.doorAutoCloseDistance;
         }
 
         private void Update()
         {
-            if (_status == Status.Open && Time.frameCount % 2 >= 1 && Vector3.Distance(PlayerInfo.instance.transform.position, transform.position) > doorAutoCloseDistance)
+            if (_status == Status.Open && Time.frameCount % 2 >= 1 && Vector3.Distance(PlayerInfo.instance.transform.position, transform.position) > _doorAutoCloseDistance)
            {
                 CloseDoor();
            }

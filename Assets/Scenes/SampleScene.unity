@@ -326,7 +326,6 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   animationDuration: 3
-  doorAutoCloseDistance: 20
 --- !u!1 &114002651
 GameObject:
   m_ObjectHideFlags: 0
@@ -391,6 +390,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f6fcf5a2232d1640928fe81bfe84a64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInfo
+--- !u!4 &126921705 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8997996947095583982, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
+  m_PrefabInstance: {fileID: 297819863}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &161557012
 GameObject:
   m_ObjectHideFlags: 0
@@ -926,7 +930,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 481247587}
     m_Modifications:
     - target: {fileID: 5420857361349278248, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
       propertyPath: analogMovement
@@ -1304,6 +1308,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 339347426}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &367147264 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8762286023885395322, guid: 9c489a8547f4d9e4387da15a4ff82c81, type: 3}
+  m_PrefabInstance: {fileID: 1830894905}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &404498185
 GameObject:
   m_ObjectHideFlags: 0
@@ -1554,6 +1563,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d101b3e77f6309649bac85b86f1fd0bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Scripts.Tools.RotateableObject
+  isInteractable: 0
   rotateTransform: {fileID: 437078009}
   movingPoint: {fileID: 1324707310}
   rotationVector: {x: 0, y: 1, z: 0}
@@ -1648,6 +1658,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 481247587}
+  - component: {fileID: 481247588}
   m_Layer: 0
   m_Name: Map
   m_TagString: Untagged
@@ -1672,8 +1683,42 @@ Transform:
   - {fileID: 270509322}
   - {fileID: 1027198044}
   - {fileID: 110895220}
+  - {fileID: 126921705}
+  - {fileID: 367147264}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &481247588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 481247586}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89715ad69b973a14899afa2c6730b30b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Zenject::Zenject.SceneContext
+  _scriptableObjectInstallers: []
+  _monoInstallers:
+  - {fileID: 1420032574}
+  _installerPrefabs: []
+  _autoRun: 1
+  OnPreInstall:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPostInstall:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPreResolve:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPostResolve:
+    m_PersistentCalls:
+      m_Calls: []
+  _parentNewObjectsUnderSceneContext: 0
+  _contractNames: []
+  _parentContractNames: []
 --- !u!1 &578317139
 GameObject:
   m_ObjectHideFlags: 0
@@ -1786,6 +1831,51 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 578317139}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &579386106
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 579386107}
+  - component: {fileID: 579386108}
+  m_Layer: 0
+  m_Name: InteractableService
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &579386107
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 579386106}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.4086, y: 0.57758, z: -0.07462}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &579386108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 579386106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a553ae079031c524fbd89a36d35795db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractableService
+  InteractableSettings: {fileID: 11400000, guid: add2690e1269fc24a8268f4c4494d471, type: 2}
 --- !u!1 &631786931
 GameObject:
   m_ObjectHideFlags: 0
@@ -2758,6 +2848,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d101b3e77f6309649bac85b86f1fd0bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::scripts.tools.RotateableObject
+  isInteractable: 0
   rotateTransform: {fileID: 939352564}
   movingPoint: {fileID: 941757768}
   rotationVector: {x: -1, y: 0, z: 0}
@@ -3132,6 +3223,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1420032572
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1420032573}
+  - component: {fileID: 1420032574}
+  m_Layer: 0
+  m_Name: GameInstaller
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1420032573
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1420032572}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.4086, y: 0.57758, z: -0.07462}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1420032574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1420032572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee8e9f407cddb464e8ffc79a1e52c231, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameInstaller
+  interactableService: {fileID: 579386108}
 --- !u!1 &1422570838
 GameObject:
   m_ObjectHideFlags: 0
@@ -3541,7 +3677,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 481247587}
     m_Modifications:
     - target: {fileID: 8762286023885395077, guid: 9c489a8547f4d9e4387da15a4ff82c81, type: 3}
       propertyPath: m_Name
@@ -3827,6 +3963,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d101b3e77f6309649bac85b86f1fd0bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::scripts.tools.RotateableObject
+  isInteractable: 0
   rotateTransform: {fileID: 2067318187}
   movingPoint: {fileID: 114002652}
   rotationVector: {x: 0, y: 1, z: 0}
@@ -3842,6 +3979,6 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 481247587}
   - {fileID: 83516570}
-  - {fileID: 297819863}
-  - {fileID: 1830894905}
   - {fileID: 1416132140}
+  - {fileID: 579386107}
+  - {fileID: 1420032573}
