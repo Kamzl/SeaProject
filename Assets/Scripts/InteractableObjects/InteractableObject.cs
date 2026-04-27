@@ -1,15 +1,18 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
-namespace scripts.tools
+namespace Scripts.Tools
 {
-    public interface InteractableObject
+    public abstract class InteractableObject : MonoBehaviour
     {
-        public void StartMovement(Vector3 startPosition)
+        [HideInInspector] public bool isInteractable;
+
+        public virtual void StartMovement(Vector3 startPosition)
         {
             
         }
-        
-        public void MoveTo(Vector3 movePosition)
+
+        public virtual void MoveTo(Vector3 movePosition)
         {
         
         }

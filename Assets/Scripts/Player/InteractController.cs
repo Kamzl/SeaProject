@@ -1,4 +1,4 @@
-using scripts.tools;
+using Scripts.Tools;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.LowLevelPhysics2D;
@@ -51,7 +51,7 @@ public class InteractController : MonoBehaviour
         {
             isInteracts = true;
             interactObject.position = hit.point;
-            interactableObject = hit.transform.GetComponentInParent<InteractableObject>();
+            interactableObject = hit.collider.transform.GetComponentInParent<InteractableObject>();
             interactableObject.StartMovement(interactObject.position);
             
             HudController.instance.SetIsInteractableDragged(true);
