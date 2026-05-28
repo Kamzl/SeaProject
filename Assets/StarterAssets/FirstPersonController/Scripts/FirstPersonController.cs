@@ -51,6 +51,16 @@ namespace StarterAssets
 		[Tooltip("How far in degrees can you move the camera down")]
 		public float BottomClamp = -90.0f;
 
+		private float _moveSpeed = 4.0f;
+		private float _sprintSpeed = 6.0f;
+		private bool _isMovementRestricted = false;
+		
+		private Vector2 _clampDirection;
+		private float _topClamp = 90.0f;
+		private float _bottomClamp = -90.0f;
+		private float _horizontalClamp;
+		private bool _isCamClamped = false;
+
 		// cinemachine
 		private float _cinemachineTargetPitch;
 
@@ -92,6 +102,20 @@ namespace StarterAssets
 			if (_mainCamera == null)
 			{
 				_mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+			}
+			
+			// init move speed
+			if (!_isMovementRestricted)
+			{
+				_moveSpeed = MoveSpeed;
+				_sprintSpeed = SprintSpeed;
+			}
+			
+			// init cam clamp
+			if (!_isCamClamped)
+			{
+				_topClamp = TopClamp;
+				_bottomClamp = BottomClamp;
 			}
 		}
 
@@ -141,20 +165,32 @@ namespace StarterAssets
 				_rotationVelocity = _input.look.x * RotationSpeed * deltaTimeMultiplier;
 
 				// clamp our pitch rotation
-				_cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
+				_cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, _bottomClamp, _topClamp);
 
 				// Update Cinemachine camera target pitch
 				CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitch, 0.0f, 0.0f);
 
 				// rotate the player left and right
 				transform.Rotate(Vector3.up * _rotationVelocity);
+				if (_isCamClamped)
+				{
+					float playerAngle = Mathf.Abs(transform.localRotation.eulerAngles.y) > 180
+						? -(360 - Mathf.Abs(transform.localRotation.eulerAngles.y))
+						: Mathf.Abs(transform.localRotation.eulerAngles.y);
+					float clampAngle = playerAngle - _clampDirection.y;
+					if (Mathf.Abs(clampAngle) > _horizontalClamp)
+					{
+						transform.Rotate(Vector3.up * ((Mathf.Abs(clampAngle) - _horizontalClamp) * (_input.look.x < 0 ? 1 : -1)));
+					}
+				}
 			}
 		}
 
 		private void Move()
 		{
 			// set target speed based on move speed, sprint speed and if sprint is pressed
-			float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+			if(_isMovementRestricted) return;
+			float targetSpeed = _input.sprint ? _sprintSpeed : _moveSpeed;
 
 			// a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
@@ -263,6 +299,36 @@ namespace StarterAssets
 
 			// when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
 			Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z), GroundedRadius);
+		}
+
+		public void RestrictCamera(Vector2 direction, float verticalLimit, float horizontalLimit)
+		{
+			_isCamClamped = true;
+			_clampDirection = direction;
+			_topClamp = direction.x + verticalLimit / 2;
+			_bottomClamp = direction.x - verticalLimit / 2;
+			_horizontalClamp = horizontalLimit / 2;
+		}
+		
+		public void UnrestrictCamera()
+		{
+			_isCamClamped = false;
+			_topClamp = TopClamp;
+			_bottomClamp = BottomClamp;
+		}
+
+		public void RestrictMovement()
+		{
+			_isMovementRestricted = true;
+			_moveSpeed = 0;
+			_sprintSpeed = 0;
+		}
+
+		public void UnrestrictMovement()
+		{
+			_isMovementRestricted = false;
+			_moveSpeed = MoveSpeed;
+			_sprintSpeed = SprintSpeed;
 		}
 	}
 }

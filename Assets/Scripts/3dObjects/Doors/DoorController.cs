@@ -3,6 +3,7 @@ using DG.Tweening;
 using R3;
 using Scripts.Tools;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Serialization;
 using Zenject;
 
@@ -10,10 +11,13 @@ namespace Objects.Doors
 {
     public class DoorController : MonoBehaviour
     {
+        [SerializeField] private int id;
         [SerializeField] private RotateableObject handle;
         [SerializeField] private Vector3 rotationEndValue;
         [SerializeField] private AnimationCurve rotationCurve;
         [SerializeField] private float animationDuration;
+
+        public UnityAction OnDoorOpen;
 
         private Quaternion _rotationStartValue;
         private Status _status;
@@ -48,31 +52,32 @@ namespace Objects.Doors
 
         private void CheckDoor(float value)
         {
-            if(_status == Status.Closed && value >= 0.95f) OpenDoor();
+            if(_status == Status.Closed && value >= _interactableService.rotateableInfo[id].Threshold) OpenDoor();
         }
-        private void OpenDoor()
+        public void OpenDoor()
         {
+            if(_status != Status.Closed) return;
             _status = Status.Opening;
-            float animationProgress = rotationCurve.keys[0].time;
-            Quaternion startRotation = transform.localRotation;
-            DOTween.To(() => animationProgress, x =>
+            transform.DORotate(rotationEndValue, animationDuration).SetEase(rotationCurve).OnComplete(() =>
             {
-                transform.localRotation = Quaternion.Lerp(startRotation, Quaternion.Euler(rotationEndValue),
-                    rotationCurve.Evaluate(x));
-            }, rotationCurve.keys[^1].time, animationDuration).OnComplete(() => {_status = Status.Open;});
+                _status = Status.Open;
+                OnDoorOpen.Invoke();
+            });
         }
         
-        private void CloseDoor()
+        public void CloseDoor()
         {
+            if(_status != Status.Open) return;
             _status = Status.Closing;
             float animationProgress = rotationCurve.keys[^1].time;
             Quaternion startRotation = transform.localRotation;
             handle.ResetRotation(animationDuration);
-            DOTween.To(() => animationProgress, x =>
-            {
-                transform.localRotation =
-                    Quaternion.Lerp(_rotationStartValue, startRotation, rotationCurve.Evaluate(x));
-            }, rotationCurve.keys[0].time, animationDuration).OnComplete(() => {_status = Status.Closed;});
+            transform.DORotateQuaternion(_rotationStartValue, animationDuration).SetEase(rotationCurve).OnComplete(() => {_status = Status.Closed;});
+            // DOTween.To(() => animationProgress, x =>
+            // {
+            //     transform.localRotation =
+            //         Quaternion.Lerp(_rotationStartValue, startRotation, rotationCurve.Evaluate(x));
+            // }, rotationCurve.keys[0].time, animationDuration).OnComplete(() => {_status = Status.Closed;});
         }
     }
 }

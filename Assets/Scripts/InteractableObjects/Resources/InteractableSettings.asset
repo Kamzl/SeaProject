@@ -13,3 +13,6 @@ MonoBehaviour:
   m_Name: InteractableSettings
   m_EditorClassIdentifier: Assembly-CSharp::InteractableSettings
   doorAutoCloseDistance: 5
+  rotateableInfo:
+  - RotateableObject: {fileID: 0}
+    Threshold: 0.95
