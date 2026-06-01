@@ -1,7 +1,6 @@
-using System;
+using System.Collections.Generic;
 using DG.Tweening;
 using R3;
-using UnityEditor;
 using UnityEngine;
 
 namespace Scripts.Tools
@@ -95,6 +94,11 @@ namespace Scripts.Tools
             {
                 isInteractable = true;
             });
+        }
+
+        public void SetIsInteractable(bool isInteractable)
+        {
+            base.isInteractable = isInteractable;
         }
     }
 }

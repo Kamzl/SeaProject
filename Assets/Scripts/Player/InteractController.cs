@@ -1,7 +1,6 @@
 using Scripts.Tools;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.LowLevelPhysics2D;
 
 public class InteractController : MonoBehaviour
 {
@@ -26,12 +25,6 @@ public class InteractController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Ray ray = new Ray()
-        {
-            origin = camera.transform.position,
-            direction = camera.transform.forward
-        };
-        RaycastHit hit;
         if (isInteracts)
         {
             interactableObject.MoveTo(interactObject.position);
@@ -46,8 +39,8 @@ public class InteractController : MonoBehaviour
             direction = camera.transform.forward
         };
         RaycastHit hit;
-        
-        if (Physics.Raycast(ray, out hit, raycastDistance, LayerMask.GetMask("Interactable")))
+        Physics.Raycast(ray, out hit, raycastDistance, ~LayerMask.GetMask("Player"));
+        if (hit.transform && hit.transform.gameObject.layer == LayerMask.NameToLayer("Interactable"))
         {
             isInteracts = true;
             interactObject.position = hit.point;
@@ -56,5 +49,15 @@ public class InteractController : MonoBehaviour
             
             HudController.instance.SetIsInteractableDragged(true);
         }
+    }
+
+    public Camera GetCamera()
+    {
+        return camera;
+    }
+    
+    public float GetRaycastDistance()
+    {
+        return raycastDistance;
     }
 }

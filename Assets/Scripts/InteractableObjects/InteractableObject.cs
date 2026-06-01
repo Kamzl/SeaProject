@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Scripts.Tools
 {
     public abstract class InteractableObject : MonoBehaviour
     {
-        [HideInInspector] public bool isInteractable;
+        [SerializeField] protected bool isInteractable;
 
         public virtual void StartMovement(Vector3 startPosition)
         {

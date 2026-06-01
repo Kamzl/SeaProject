@@ -1,10 +1,8 @@
-using System;
 using DG.Tweening;
 using R3;
 using Scripts.Tools;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 using Zenject;
 
 namespace Objects.Doors
@@ -21,6 +19,7 @@ namespace Objects.Doors
 
         private Quaternion _rotationStartValue;
         private Status _status;
+        private Collider _collider;
 
         [Inject] private InteractableService _interactableService;
         private float _doorAutoCloseDistance;
@@ -40,11 +39,12 @@ namespace Objects.Doors
             _rotationStartValue = transform.localRotation;
             _status = Status.Closed;
             _doorAutoCloseDistance = _interactableService.InteractableSettings.doorAutoCloseDistance;
+            _collider = GetComponent<Collider>();
         }
 
         private void Update()
         {
-            if (_status == Status.Open && Time.frameCount % 2 >= 1 && Vector3.Distance(PlayerInfo.instance.transform.position, transform.position) > _doorAutoCloseDistance)
+            if (_status == Status.Open && Time.frameCount % 9 <= 0 && Vector3.Distance(PlayerInfo.instance.transform.position, transform.position) > _doorAutoCloseDistance)
            {
                 CloseDoor();
            }
