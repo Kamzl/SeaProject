@@ -13,11 +13,14 @@ public class ProgressController : MonoBehaviour
     [SerializeField] private CharacterController playerCharacterController;
     [SerializeField] private OpeningSceneController openingSceneController;
 
-
+    
+    
     private void Awake()
     {
         playerController.RestrictCamera(new Vector2(0, 0), 50, 80);
         playerController.RestrictMovement();
+        playerController.LockSwimming(true);
+        playerController.SetNextTimeInWaterPos(new Vector2(-15, 10));
         openingSceneController.Init(playerController, playerCharacterController);
     }
 }

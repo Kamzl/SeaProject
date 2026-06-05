@@ -52,8 +52,6 @@ public class OpeningSceneController : MonoBehaviour
             loweringLever.SetIsInteractable(false);
         });
         
-        lightOriginalIntensity = outsideLight.intensity;
-        outsideLight.intensity = lightStartIntensity;
     }
 
     public void Init(FirstPersonController playerController, CharacterController playerCharacterController)
@@ -77,6 +75,9 @@ public class OpeningSceneController : MonoBehaviour
     private void SetupAnimations()
     {
         //Exit Animation
+        lightOriginalIntensity = outsideLight.intensity;
+        outsideLight.intensity = lightStartIntensity;
+        
         _exitAnimation.Kill();
         _exitAnimation = DOTween.Sequence().Pause();
         
@@ -134,7 +135,7 @@ public class OpeningSceneController : MonoBehaviour
         _loweringAnimation.Append(craneTransform.DOLocalRotate(new Vector3(0, 0, rotationDegreeSecondHalf), rotationDurationSecondHalf).SetEase(Ease.InSine));
         _loweringAnimation.Join(tanksRotationTransform.DOLocalRotate(new Vector3(0, 0, -((rotationDegreeSecondHalf - rotationDegreeFirstHalf) / 1.5f + rotationDegreeFirstHalf)), rotationDurationSecondHalf / 4).SetEase(Ease.OutSine));
         _loweringAnimation.Insert(rotationDurationFirstHalf + rotationDurationSecondHalf / 4, tanksRotationTransform.DOLocalRotate(new Vector3(0, 0, -rotationDegreeSecondHalf), rotationDurationSecondHalf).SetEase(Ease.InSine));
-        _loweringAnimation.Append(tanksPositionTransform.DOLocalMoveY(loweringFinalPos, loweringDuration).SetEase(Ease.InQuad));
+        _loweringAnimation.Append(tanksPositionTransform.DOLocalMoveY(loweringFinalPos, loweringDuration).SetEase(Ease.InQuad).OnComplete(() => tanksPositionTransform.gameObject.SetActive(false)));
 
         float ropeScale = 8.5f;
         _loweringAnimation.Join(ropeTransform.DOScaleY(ropeScale, loweringDuration).SetEase(Ease.InQuad));

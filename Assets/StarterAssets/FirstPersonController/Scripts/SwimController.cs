@@ -9,7 +9,7 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM
 	[RequireComponent(typeof(PlayerInput))]
 #endif
-	public class FirstPersonController : MonoBehaviour
+	public class SwimController : MonoBehaviour
 	{
 		[Header("Player")]
 		[Tooltip("Move speed of the character in m/s")]
@@ -20,7 +20,6 @@ namespace StarterAssets
 		public float RotationSpeed = 1.0f;
 		[Tooltip("Acceleration and deceleration")]
 		public float SpeedChangeRate = 10.0f;
-		
 
 		[Space(10)]
 		[Tooltip("The height the player can jump")]
@@ -45,14 +44,6 @@ namespace StarterAssets
 		public float GroundedRadius = 0.5f;
 		[Tooltip("What layers the character uses as ground")]
 		public LayerMask GroundLayers;
-		
-		[Header("Player Swimming")]
-		[Tooltip("Move speed of the character in m/s")]
-		public float SwimSpeed = 4.0f;
-		[Tooltip("Sprint speed of the character in m/s")]
-		public float SwimSprintSpeed = 6.0f;
-		[Tooltip("Acceleration and deceleration")]
-		public float SwimSpeedChangeRate = 10.0f;
 
 		[Header("Cinemachine")]
 		[Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
@@ -61,7 +52,6 @@ namespace StarterAssets
 		public float TopClamp = 90.0f;
 		[Tooltip("How far in degrees can you move the camera down")]
 		public float BottomClamp = -90.0f;
-		[SerializeField] private GameObject DepthSphere;
 
 		private float _moveSpeed = 4.0f;
 		private float _sprintSpeed = 6.0f;
@@ -74,20 +64,16 @@ namespace StarterAssets
 		private bool _isCamClamped = false;
 
 		// cinemachine
-		private float _cinemachineTargetPitchX;
-		private float _cinemachineTargetPitchY;
+		private float _cinemachineTargetPitch;
 
 		// player
 		private float _speed;
 		private float _rotationVelocity;
 		private float _verticalVelocity;
 		private float _terminalVelocity = 53.0f;
-		private float _startingGravity = 15f;
 		private bool _isSwimming = false;
 		private bool _isSwimmingLocked = false;
 		private bool _isSwimmingLockedRotated = false;
-		private Vector2 _swimmingCamLock = new Vector2(40, 40);
-		private Vector2 _nextTimeInWaterPos = Vector2.zero;
 
 		// timeout deltatime
 		private float _jumpTimeoutDelta;
@@ -136,8 +122,6 @@ namespace StarterAssets
 				_topClamp = TopClamp;
 				_bottomClamp = BottomClamp;
 			}
-
-			_startingGravity = Gravity;
 		}
 
 		private void Start()
@@ -159,8 +143,8 @@ namespace StarterAssets
 		{
 			JumpAndGravity();
 			GroundedCheck();
-			Move();
 			SwimmingCheck();
+			Move();
 		}
 
 		private void LateUpdate()
@@ -177,11 +161,6 @@ namespace StarterAssets
 		
 		private void SwimmingCheck()
 		{
-			if (_isSwimming && transform.position.y >= WaterLevel)
-			{
-				DepthSphere.SetActive(false);
-				if (_isSwimmingLockedRotated) UndoRotatePlayerForSwimRestriction();
-			}
 			_isSwimming = transform.position.y < WaterLevel;
 			if (_isSwimmingLocked && _isSwimming && !_isSwimmingLockedRotated) RotatePlayerForSwimRestriction();
 		}
@@ -195,27 +174,15 @@ namespace StarterAssets
 
 		private void RotatePlayerForSwimRestriction()
 		{
-			DepthSphere.SetActive(true);
-			Gravity = 0;
-			_verticalVelocity = 0;
-			if (_nextTimeInWaterPos != Vector2.zero)
-			{
-				_controller.Move(new Vector3(_nextTimeInWaterPos.x - transform.position.x, -2, _nextTimeInWaterPos.y - transform.position.z));
-				_nextTimeInWaterPos = Vector2.zero;
-				_cinemachineTargetPitchX = ClampAngle(_cinemachineTargetPitchX, -_swimmingCamLock.x, _swimmingCamLock.x);
-				_cinemachineTargetPitchY = ClampAngle(_cinemachineTargetPitchY, -_swimmingCamLock.y, _swimmingCamLock.y);
-				CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(Vector3.zero);
-			}
-			transform.localRotation = Quaternion.Euler(90, -90, 0);
-			CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitchX, _cinemachineTargetPitchY, 0);
+			RestrictCamera(new Vector2(0, 0), 50, 80);
+			transform.Rotate(transform.right, 90);
 			_isSwimmingLockedRotated = true;
 		}
 
 		private void UndoRotatePlayerForSwimRestriction()
 		{
-			transform.localRotation = Quaternion.Euler(0, -90, 0);
-			CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitchX, 0, 0);
-			Gravity = _startingGravity;
+			UnrestrictCamera();
+			transform.Rotate(transform.right, -90);
 			_isSwimmingLockedRotated = false;
 		}
 
@@ -227,25 +194,14 @@ namespace StarterAssets
 				//Don't multiply mouse input by Time.deltaTime
 				float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 				
-				_cinemachineTargetPitchX += _input.look.y * RotationSpeed * deltaTimeMultiplier;
-				_cinemachineTargetPitchY += _input.look.x * RotationSpeed * deltaTimeMultiplier;
+				_cinemachineTargetPitch += _input.look.y * RotationSpeed * deltaTimeMultiplier;
 				_rotationVelocity = _input.look.x * RotationSpeed * deltaTimeMultiplier;
 
 				// clamp our pitch rotation
-				_cinemachineTargetPitchX = ClampAngle(_cinemachineTargetPitchX, _bottomClamp, _topClamp);
+				_cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, _bottomClamp, _topClamp);
 
 				// Update Cinemachine camera target pitch
-				if (_isSwimming && _isSwimmingLocked)
-				{
-					_cinemachineTargetPitchX = ClampAngle(_cinemachineTargetPitchX, -_swimmingCamLock.x, _swimmingCamLock.x);
-					_cinemachineTargetPitchY = ClampAngle(_cinemachineTargetPitchY, -_swimmingCamLock.y, _swimmingCamLock.y);
-					CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitchX, _cinemachineTargetPitchY, 0);
-					return;
-				}
-				else
-				{
-					CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitchX, 0.0f, 0.0f);
-				}
+				CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitch, 0.0f, 0.0f);
 
 				// rotate the player left and right
 				transform.Rotate(Vector3.up * _rotationVelocity);
@@ -267,7 +223,7 @@ namespace StarterAssets
 		{
 			// set target speed based on move speed, sprint speed and if sprint is pressed
 			if(_isMovementRestricted) return;
-			float targetSpeed = _input.sprint ? (_isSwimming ? SwimSprintSpeed : _sprintSpeed) : (_isSwimming ? SwimSpeed : _moveSpeed);
+			float targetSpeed = _input.sprint ? _sprintSpeed : _moveSpeed;
 
 			// a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
@@ -286,7 +242,7 @@ namespace StarterAssets
 			{
 				// creates curved result rather than a linear one giving a more organic speed change
 				// note T in Lerp is clamped, so we don't need to clamp our speed
-				_speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude, Time.deltaTime * (_isSwimming ? SwimSpeedChangeRate : SpeedChangeRate));
+				_speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude, Time.deltaTime * SpeedChangeRate);
 
 				// round speed to 3 decimal places
 				_speed = Mathf.Round(_speed * 1000f) / 1000f;
@@ -315,6 +271,7 @@ namespace StarterAssets
 			}
 
 			// move the player
+			Debug.Log(inputDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
 			_controller.Move(inputDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
 		}
 
@@ -413,11 +370,6 @@ namespace StarterAssets
 			_isMovementRestricted = false;
 			_moveSpeed = MoveSpeed;
 			_sprintSpeed = SprintSpeed;
-		}
-		
-		public void SetNextTimeInWaterPos(Vector2 pos)
-		{
-			_nextTimeInWaterPos = pos;
 		}
 	}
 }
