@@ -122,6 +122,9 @@
         },
         {
             "m_Id": "69778bf8971d49349ee265ca29f9f04b"
+        },
+        {
+            "m_Id": "b264d7e611544de8b3ee98fd76781514"
         }
     ],
     "m_GroupDatas": [
@@ -426,9 +429,9 @@
             },
             "m_InputSlot": {
                 "m_Node": {
-                    "m_Id": "d1250019d0504583874a00648be7f929"
+                    "m_Id": "b264d7e611544de8b3ee98fd76781514"
                 },
-                "m_SlotId": 2
+                "m_SlotId": 0
             }
         },
         {
@@ -457,6 +460,20 @@
                     "m_Id": "6149c5e0a641466daa65b6324072cb6b"
                 },
                 "m_SlotId": 0
+            }
+        },
+        {
+            "m_OutputSlot": {
+                "m_Node": {
+                    "m_Id": "b264d7e611544de8b3ee98fd76781514"
+                },
+                "m_SlotId": 2
+            },
+            "m_InputSlot": {
+                "m_Node": {
+                    "m_Id": "d1250019d0504583874a00648be7f929"
+                },
+                "m_SlotId": 2
             }
         },
         {
@@ -1058,6 +1075,56 @@
 
 {
     "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.DynamicVectorMaterialSlot",
+    "m_ObjectId": "20071da343234a23b977441c044e5959",
+    "m_Id": 0,
+    "m_DisplayName": "A",
+    "m_SlotType": 0,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "A",
+    "m_StageCapability": 3,
+    "m_Value": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "m_LiteralMode": false
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.DynamicVectorMaterialSlot",
+    "m_ObjectId": "24045e1f12f64ed5b28db2729c12204e",
+    "m_Id": 2,
+    "m_DisplayName": "Out",
+    "m_SlotType": 1,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "Out",
+    "m_StageCapability": 3,
+    "m_Value": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "m_LiteralMode": false
+}
+
+{
+    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
     "m_ObjectId": "269209b54b83451a85004749144013ad",
     "m_Id": 0,
@@ -1411,6 +1478,31 @@
     "m_Value": 0.0,
     "m_DefaultValue": 0.0,
     "m_Labels": [],
+    "m_LiteralMode": false
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.DynamicVectorMaterialSlot",
+    "m_ObjectId": "4e4f36867a3549da9af13a5edc8b5a57",
+    "m_Id": 1,
+    "m_DisplayName": "B",
+    "m_SlotType": 0,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "B",
+    "m_StageCapability": 3,
+    "m_Value": {
+        "x": 2.0,
+        "y": 2.0,
+        "z": 2.0,
+        "w": 2.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
     "m_LiteralMode": false
 }
 
@@ -3105,8 +3197,8 @@
     "m_ObjectId": "ab228c5921414dca85d33553a1e0e646",
     "m_Title": "OverWater",
     "m_Position": {
-        "x": -1376.0,
-        "y": -1322.400146484375
+        "x": -1375.9998779296875,
+        "y": -1322.4000244140625
     }
 }
 
@@ -3144,6 +3236,45 @@
         "times",
         "x"
     ],
+    "m_Precision": 0,
+    "m_PreviewExpanded": true,
+    "m_DismissedVersion": 0,
+    "m_PreviewMode": 0,
+    "m_CustomColors": {
+        "m_SerializableColors": []
+    }
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.PowerNode",
+    "m_ObjectId": "b264d7e611544de8b3ee98fd76781514",
+    "m_Group": {
+        "m_Id": ""
+    },
+    "m_Name": "Power",
+    "m_DrawState": {
+        "m_Expanded": true,
+        "m_Position": {
+            "serializedVersion": "2",
+            "x": -729.5999145507813,
+            "y": 1541.599853515625,
+            "width": 208.0,
+            "height": 301.5999755859375
+        }
+    },
+    "m_Slots": [
+        {
+            "m_Id": "20071da343234a23b977441c044e5959"
+        },
+        {
+            "m_Id": "4e4f36867a3549da9af13a5edc8b5a57"
+        },
+        {
+            "m_Id": "24045e1f12f64ed5b28db2729c12204e"
+        }
+    ],
+    "synonyms": [],
     "m_Precision": 0,
     "m_PreviewExpanded": true,
     "m_DismissedVersion": 0,
@@ -3376,8 +3507,8 @@
     "m_ObjectId": "c9532bbebdb343479248b71352c02be1",
     "m_Title": "UnderWater",
     "m_Position": {
-        "x": -1046.400146484375,
-        "y": -988.0001220703125
+        "x": -1046.39990234375,
+        "y": -987.9999389648438
     }
 }
 
@@ -3482,9 +3613,9 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -729.5999145507813,
-            "y": 1048.0,
-            "width": 207.9998779296875,
+            "x": -407.199951171875,
+            "y": 999.199951171875,
+            "width": 207.99996948242188,
             "height": 325.5999755859375
         }
     },
@@ -4000,7 +4131,7 @@
     "m_ObjectId": "f88bac14a1504ff1bc33237ce829c182",
     "m_Title": "Screen-World conversion",
     "m_Position": {
-        "x": -2878.400390625,
+        "x": -2878.39990234375,
         "y": -1168.7999267578125
     }
 }

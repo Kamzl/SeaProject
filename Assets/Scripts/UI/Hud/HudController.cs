@@ -7,6 +7,7 @@ public class HudController : MonoBehaviour
     public static HudController instance;
 
     [SerializeField] private Image crosshair;
+    [SerializeField] private Camera UICamera;
     [SerializeField] private List<Color> crosshairColors;
     
     [SerializeField] private RectTransform dragOriginImage;
@@ -33,8 +34,8 @@ public class HudController : MonoBehaviour
     {
         if (_isInteractableDragged)
         {
-            if (Camera.main != null)
-                dragOriginImage.position = Camera.main.WorldToScreenPoint(_dragOriginPoint.position);
+            if (UICamera != null)
+                dragOriginImage.position = UICamera.WorldToScreenPoint(_dragOriginPoint.position);
         }
     }
 
