@@ -7,7 +7,7 @@
       "dependencies": {
         "com.unity.modules.imgui": "1.0.0"
       },
-      "hash": "dc69078430149db8cd93069f502cefe148745b4b"
+      "hash": "c6f8a932d9b8e771a9f405e6d72058a21ce0b457"
     },
     "com.cysharp.unitask": {
       "version": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",

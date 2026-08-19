@@ -19,8 +19,6 @@ public class ProgressController : MonoBehaviour
     {
         playerController.RestrictCamera(new Vector2(0, 0), 50, 80);
         playerController.RestrictMovement();
-        playerController.LockSwimming(true);
-        playerController.SetNextTimeInWaterPos(new Vector2(-15, 10));
         openingSceneController.Init(playerController, playerCharacterController);
     }
 }

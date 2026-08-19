@@ -42,7 +42,7 @@ Material:
     - _WaterLevel: 0
     m_Colors:
     - _WaterColor: {r: 0, g: 0.15623765, b: 0.2754717, a: 1}
-    - _WaterColorMax: {r: 0, g: 0.010264164, b: 0.06415099, a: 1}
+    - _WaterColorMax: {r: 0, g: 0.029009402, b: 0.15471691, a: 1}
     - _WaterColorMin: {r: 0.40784314, g: 0.48235294, b: 0.8784314, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

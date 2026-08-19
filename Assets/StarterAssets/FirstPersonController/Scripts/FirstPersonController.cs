@@ -61,7 +61,6 @@ namespace StarterAssets
 		public float TopClamp = 90.0f;
 		[Tooltip("How far in degrees can you move the camera down")]
 		public float BottomClamp = -90.0f;
-		[SerializeField] private GameObject DepthSphere;
 
 		private float _moveSpeed = 4.0f;
 		private float _sprintSpeed = 6.0f;
@@ -75,7 +74,6 @@ namespace StarterAssets
 
 		// cinemachine
 		private float _cinemachineTargetPitchX;
-		private float _cinemachineTargetPitchY;
 
 		// player
 		private float _speed;
@@ -84,9 +82,6 @@ namespace StarterAssets
 		private float _terminalVelocity = 53.0f;
 		private float _startingGravity = 15f;
 		private bool _isSwimming = false;
-		private bool _isSwimmingLocked = false;
-		private bool _isSwimmingLockedRotated = false;
-		private Vector2 _swimmingCamLock = new Vector2(40, 40);
 		private Vector2 _nextTimeInWaterPos = Vector2.zero;
 
 		// timeout deltatime
@@ -150,6 +145,16 @@ namespace StarterAssets
 			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
 #endif
 
+			InputAction jumpAction = _playerInput.actions.FindAction("Jump", false);
+			jumpAction.canceled += context =>
+			{
+				_input.jump = false;
+			};
+			InputAction crouchAction = _playerInput.actions.FindAction("Crouch", false);
+			crouchAction.canceled += context =>
+			{
+				_input.crouch = false;
+			};
 			// reset our timeouts on start
 			_jumpTimeoutDelta = JumpTimeout;
 			_fallTimeoutDelta = FallTimeout;
@@ -177,46 +182,24 @@ namespace StarterAssets
 		
 		private void SwimmingCheck()
 		{
-			if (_isSwimming && transform.position.y >= WaterLevel)
+			if (_isSwimming && CinemachineCameraTarget.transform.position.y >= WaterLevel)
 			{
-				DepthSphere.SetActive(false);
-				if (_isSwimmingLockedRotated) UndoRotatePlayerForSwimRestriction();
+				Gravity = _startingGravity;
 			}
-			_isSwimming = transform.position.y < WaterLevel;
-			if (_isSwimmingLocked && _isSwimming && !_isSwimmingLockedRotated) RotatePlayerForSwimRestriction();
-		}
 
-		public void LockSwimming(bool isLocked)
-		{
-			_isSwimmingLocked = isLocked;
-			if (_isSwimming && isLocked && !_isSwimmingLockedRotated) RotatePlayerForSwimRestriction();
-			if (!isLocked) UndoRotatePlayerForSwimRestriction();
-		}
-
-		private void RotatePlayerForSwimRestriction()
-		{
-			DepthSphere.SetActive(true);
-			Gravity = 0;
-			_verticalVelocity = 0;
-			if (_nextTimeInWaterPos != Vector2.zero)
+			if (!_isSwimming && CinemachineCameraTarget.transform.position.y < WaterLevel)
 			{
-				_controller.Move(new Vector3(_nextTimeInWaterPos.x - transform.position.x, -2, _nextTimeInWaterPos.y - transform.position.z));
-				_nextTimeInWaterPos = Vector2.zero;
-				_cinemachineTargetPitchX = ClampAngle(_cinemachineTargetPitchX, -_swimmingCamLock.x, _swimmingCamLock.x);
-				_cinemachineTargetPitchY = ClampAngle(_cinemachineTargetPitchY, -_swimmingCamLock.y, _swimmingCamLock.y);
-				CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(Vector3.zero);
+				Gravity = 0;
+				_verticalVelocity = 0;
+				// _controller.Move(new Vector3(0, -0.1f, 0));
+				if (_nextTimeInWaterPos != Vector2.zero)
+				{
+					_controller.Move(new Vector3(_nextTimeInWaterPos.x - transform.position.x, 0, _nextTimeInWaterPos.y - transform.position.z));
+					_nextTimeInWaterPos = Vector2.zero;
+				}
 			}
-			transform.localRotation = Quaternion.Euler(90, -90, 0);
-			CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitchX, _cinemachineTargetPitchY, 0);
-			_isSwimmingLockedRotated = true;
-		}
-
-		private void UndoRotatePlayerForSwimRestriction()
-		{
-			transform.localRotation = Quaternion.Euler(0, -90, 0);
-			CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitchX, 0, 0);
-			Gravity = _startingGravity;
-			_isSwimmingLockedRotated = false;
+			
+			_isSwimming = CinemachineCameraTarget.transform.position.y < WaterLevel;
 		}
 
 		private void CameraRotation()
@@ -228,24 +211,13 @@ namespace StarterAssets
 				float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 				
 				_cinemachineTargetPitchX += _input.look.y * RotationSpeed * deltaTimeMultiplier;
-				_cinemachineTargetPitchY += _input.look.x * RotationSpeed * deltaTimeMultiplier;
 				_rotationVelocity = _input.look.x * RotationSpeed * deltaTimeMultiplier;
 
 				// clamp our pitch rotation
 				_cinemachineTargetPitchX = ClampAngle(_cinemachineTargetPitchX, _bottomClamp, _topClamp);
 
 				// Update Cinemachine camera target pitch
-				if (_isSwimming && _isSwimmingLocked)
-				{
-					_cinemachineTargetPitchX = ClampAngle(_cinemachineTargetPitchX, -_swimmingCamLock.x, _swimmingCamLock.x);
-					_cinemachineTargetPitchY = ClampAngle(_cinemachineTargetPitchY, -_swimmingCamLock.y, _swimmingCamLock.y);
-					CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitchX, _cinemachineTargetPitchY, 0);
-					return;
-				}
-				else
-				{
-					CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitchX, 0.0f, 0.0f);
-				}
+				CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitchX, 0.0f, 0.0f);
 
 				// rotate the player left and right
 				transform.Rotate(Vector3.up * _rotationVelocity);
@@ -273,10 +245,14 @@ namespace StarterAssets
 
 			// note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
 			// if there is no input, set the target speed to 0
-			if (_input.move == Vector2.zero) targetSpeed = 0.0f;
+			if (_input.move == Vector2.zero && !(_isSwimming && (_input.jump || _input.crouch))) targetSpeed = 0.0f;
 
 			// a reference to the players current horizontal velocity
 			float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
+			if (_isSwimming)
+			{
+				currentHorizontalSpeed = new Vector3(_controller.velocity.x, _controller.velocity.y, _controller.velocity.z).magnitude;
+			}
 
 			float speedOffset = 0.1f;
 			float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
@@ -301,12 +277,12 @@ namespace StarterAssets
 
 			// note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
 			// if there is a move input rotate player when the player is moving
-			if (_input.move != Vector2.zero)
+			if (_input.move != Vector2.zero || (_isSwimming && (_input.jump || _input.crouch)))
 			{
 				// move
-				if (_isSwimmingLocked && _isSwimming)
+				if (_isSwimming)
 				{
-					inputDirection = Vector3.down * _input.move.y;
+					inputDirection = transform.right * _input.move.x + CinemachineCameraTarget.transform.forward * _input.move.y + (_input.jump ? transform.up : Vector3.zero) + (_input.crouch ? -transform.up : Vector3.zero);
 				}
 				else
 				{
@@ -355,8 +331,11 @@ namespace StarterAssets
 					_fallTimeoutDelta -= Time.deltaTime;
 				}
 
-				// if we are not grounded, do not jump
-				_input.jump = false;
+				// if we are not grounded and not swimming, do not jump
+				if (!_isSwimming)
+				{
+					_input.jump = false;
+				}
 			}
 
 			// apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)

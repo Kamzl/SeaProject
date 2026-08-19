@@ -52,6 +52,7 @@ public class HudController : MonoBehaviour
     
     public void SetIsInteractableDragged(bool value)
     {
+        Debug.Log($"InteractableDragged {value}");
         _isInteractableDragged = value;
         if (!_isInteractableDragged)
         {
